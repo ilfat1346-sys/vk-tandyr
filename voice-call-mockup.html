@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Заказ по телефону — как это работает</title>
+<style>
+  :root{ --vk-blue:#5181b8; --vk-green:#4bb34b; --vk-red:#e64646; --vk-link:#4986cc; --vk-bg:#edeef0; --vk-line:#e7e8ec; }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{background:#f5f6f8; font-family:-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif; color:#1c1c1e; padding:26px 18px 34px;}
+  header{max-width:1180px; margin:0 auto 20px;}
+  header h1{font-size:20px; font-weight:700;}
+  header p{margin-top:6px; font-size:13px; color:#6d7885; max-width:780px; line-height:1.45;}
+  main{max-width:1180px; margin:0 auto; display:flex; flex-wrap:wrap; gap:26px; align-items:flex-start;}
+  figure.shot{width:375px;}
+  figure.shot figcaption{margin-top:10px; font-size:13px; color:#4a5560; font-weight:600;}
+  figure.shot figcaption span{font-weight:400; color:#8a94a0;}
+
+  .frame{width:375px; height:740px; border-radius:26px; overflow:hidden;
+         box-shadow:0 10px 30px rgba(0,20,50,.14), 0 0 0 1px rgba(0,20,50,.06);
+         display:flex; flex-direction:column;}
+
+  /* — звонок — */
+  .call{background:#15181d; color:#eef2f6; padding:22px 16px; display:flex; flex-direction:column; height:100%;}
+  .call .st{font-size:12px; color:#8d97a3; text-align:center; margin-top:6px;}
+  .call .nm{font-size:22px; font-weight:800; text-align:center; margin-top:10px;}
+  .call .who{font-size:13px; color:#98a2ae; text-align:center; margin-top:4px;}
+  .wave{display:flex; align-items:center; justify-content:center; gap:3px; height:54px; margin:18px 0 6px;}
+  .wave i{display:block; width:4px; border-radius:2px; background:#e0ba48; opacity:.9;}
+  .tr{flex:1; overflow:hidden; display:flex; flex-direction:column; gap:8px; margin-top:10px;}
+  .line{font-size:13px; line-height:1.4;}
+  .line .rn{font-weight:700;}
+  .line.a .rn{color:#e0ba48;}
+  .line.k .rn{color:#9fd0ff;}
+  .line.a{color:#e8ecf1;}
+  .line.k{color:#c9d4e0;}
+  .call .end{margin-top:10px; text-align:center; font-size:12px; color:#7d8794;}
+
+  /* — чат админки — */
+  .vk-top{height:54px; flex:0 0 54px; display:flex; align-items:center; gap:9px; padding:0 12px; background:#fff; border-bottom:1px solid var(--vk-line);}
+  .back{font-size:22px; color:#5d6a77; line-height:1; margin-right:2px;}
+  .ava{width:34px; height:34px; border-radius:50%; background:linear-gradient(145deg,#39434d,#20262c); color:#ffd35c; font-weight:800; font-size:12px; display:flex; align-items:center; justify-content:center;}
+  .who2 .nm{font-size:14.5px; font-weight:700;}
+  .who2 .st{font-size:11px; color:#95a1ad; margin-top:1px;}
+  .chat{flex:1; background:var(--vk-bg); padding:10px 10px 8px; display:flex; flex-direction:column; justify-content:flex-end; gap:6px; overflow:hidden;}
+  .msg{max-width:88%; padding:7px 11px; border-radius:14px; background:#fff; box-shadow:0 1px 1px rgba(0,20,50,.07);
+       font-size:13.3px; line-height:1.42; white-space:pre-line; align-self:flex-start; border-bottom-left-radius:5px; overflow-wrap:break-word;}
+  .msg .inl{display:flex; margin:7px -11px -7px; border-top:1px solid #eceef1;}
+  .inl .seg{flex:1; text-align:center; font-size:12px; padding:9px 2px; color:var(--vk-link); font-weight:600;}
+  .inl .seg + .seg{border-left:1px solid #eceef1;}
+  .inl .seg.g{color:var(--vk-green);} .inl .seg.r{color:var(--vk-red);}
+  .kb{flex:0 0 auto; background:#fff; border-top:1px solid var(--vk-line); padding:8px 10px;}
+  .kb .row{display:flex; gap:6px;}
+  .b{flex:1; border:1px solid #e1e3e6; background:#fff; border-radius:8px; padding:9px 6px; font-size:12.6px; font-weight:600; color:#2c2d2e; text-align:center;}
+  .b.p{background:var(--vk-blue); border-color:var(--vk-blue); color:#fff;}
+  .input{flex:0 0 auto; background:#fff; border-top:1px solid var(--vk-line); padding:11px 14px; font-size:13px; color:#99a2ad;}
+</style>
+</head>
+<body>
+<header>
+  <h1>Заказ по телефону — звонок принимает голосовой агент, заказ падает в бот-админку</h1>
+  <p>Клиент звонит на обычный номер и просто говорит, что хочет заказать. Агент понимает речь, уточняет состав, адрес и номер, подтверждает сумму — и заказ тут же появляется в админ-боте ВК с пометкой «звонок», как и заказы из мини-приложения, сайта и ВК-бота.</p>
+  <p style="margin-top:12px; font-weight:600; color:#3d4a58;">▶ Послушайте демо-звонок — примерно так это будет звучать (голоса сгенерированы для примера):</p>
+  <audio controls preload="metadata" src="demo-call.mp3" style="margin-top:8px; width:100%; max-width:430px;"></audio>
+</header>
+<main>
+
+  <!-- 1. Разговор -->
+  <figure class="shot">
+    <div class="frame">
+      <div class="call">
+        <div class="st">Идёт разговор · 0:47</div>
+        <div class="nm">Бай-Тандыр</div>
+        <div class="who">голосовой помощник · приём заказов</div>
+        <div class="wave">
+          <i style="height:12px"></i><i style="height:26px"></i><i style="height:40px"></i><i style="height:22px"></i>
+          <i style="height:34px"></i><i style="height:14px"></i><i style="height:44px"></i><i style="height:30px"></i>
+          <i style="height:18px"></i><i style="height:38px"></i><i style="height:24px"></i><i style="height:12px"></i>
+          <i style="height:32px"></i><i style="height:20px"></i><i style="height:42px"></i><i style="height:16px"></i>
+        </div>
+        <div class="tr">
+          <div class="line a"><span class="rn">Агент:</span> Здравствуйте! Бай-Тандыр, заказ еды. Что будете заказывать?</div>
+          <div class="line k"><span class="rn">Клиент:</span> Здравствуйте, две лепёшки и шашлык из говядины.</div>
+          <div class="line a"><span class="rn">Агент:</span> Две лепёшки тандырные и один шашлык из говядины. Соус добавить?</div>
+          <div class="line k"><span class="rn">Клиент:</span> Да, два соуса.</div>
+          <div class="line a"><span class="rn">Агент:</span> Итого 520 рублей. Самовывоз или доставка?</div>
+          <div class="line k"><span class="rn">Клиент:</span> Доставка, улица Ленина, 12.</div>
+          <div class="line a"><span class="rn">Агент:</span> Перезвоним на этот номер. Заказ №1004 принят, готовность примерно 20 минут. Спасибо!</div>
+        </div>
+        <div class="end">Продолжительность звонка — около минуты, без ожидания и очереди</div>
+      </div>
+    </div>
+    <figcaption>1. Разговор с голосовым агентом <span>— обычный звонок, понять можно всё как живому оператору</span></figcaption>
+  </figure>
+
+  <!-- 2. Заказ в админке -->
+  <figure class="shot">
+    <div class="frame">
+      <div class="vk-top"><div class="back">‹</div><div class="ava">БТ</div>
+        <div class="who2"><div class="nm">Бай-Тандыр · Заказы</div><div class="st">служебный бот · заказы</div></div></div>
+      <div class="chat">
+        <div class="msg">🆕 Заказ №1004 · звонок
+👤 Звонок
+📞 +7 917 222-33-44
+🛵 Доставка: ул. Ленина, 12
+—
+• Лепёшка тандырная × 2 — 100 ₽
+• Шашлык из говядины × 1 — 380 ₽
+• Фирменный соус × 2 — 40 ₽
+Итого: 520 ₽
+<div class="inl"><div class="seg">🍳 Принять</div><div class="seg g">✅ Готово</div><div class="seg r">❌ Отклонить</div></div></div>
+      </div>
+      <div class="kb">
+        <div class="row"><div class="b p">📋 Активные заказы</div></div>
+      </div>
+      <div class="input">Сообщение</div>
+    </div>
+    <figcaption>2. Заказ тут же в админ-боте <span>— с пометкой «звонок» и теми же кнопками</span></figcaption>
+  </figure>
+
+</main>
+</body>
+</html>
