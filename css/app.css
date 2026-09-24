@@ -1,0 +1,265 @@
+/* Бай-Тандыр · VK Mini App — стили (тёмная тема, золото) */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* атрибут hidden всегда важнее классов (иначе .cartbar{display:flex} его перебьёт) */
+[hidden] { display: none !important; }
+
+:root {
+  --bg: #0c0c0c;
+  --bg-soft: #121212;
+  --card: #161616;
+  --card-hover: #1d1d1d;
+  --gold: #c9a227;
+  --gold-light: #e8c96a;
+  --gold-dark: #a0801a;
+  --text: #ececec;
+  --muted: #9a9a9a;
+  --border: #262626;
+  --danger: #e5484d;
+  --ok: #46a758;
+  --radius: 16px;
+  --radius-sm: 12px;
+  --safe-b: env(safe-area-inset-bottom, 0px);
+}
+
+html, body { height: 100%; }
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+img { display: block; max-width: 100%; }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+input, textarea { font: inherit; }
+
+#app { max-width: 560px; margin: 0 auto; padding-bottom: 96px; }
+
+/* демо-плашка */
+.demo-note {
+  background: #3a2c07; color: #f5d76e; font-size: 12.5px; font-weight: 600;
+  text-align: center; padding: 7px 12px; letter-spacing: .2px;
+}
+
+/* шапка */
+.topbar {
+  position: sticky; top: 0; z-index: 40;
+  background: rgba(12,12,12,.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 14px 8px;
+}
+.brand { display: flex; align-items: center; gap: 10px; }
+.brand-logo {
+  width: 42px; height: 42px; border-radius: 12px; flex: 0 0 auto;
+  display: grid; place-items: center;
+  background: linear-gradient(145deg, var(--gold-light), var(--gold-dark));
+  color: #141005; font-weight: 800; font-size: 15px; letter-spacing: .5px;
+  box-shadow: 0 2px 10px rgba(201,162,39,.25);
+}
+.brand-name { font-size: 15.5px; font-weight: 800; letter-spacing: 1.1px; }
+.brand-sub { font-size: 11.5px; color: var(--muted); letter-spacing: .4px; }
+.shop-info { margin-top: 7px; font-size: 12px; color: var(--muted); display: flex; gap: 12px; flex-wrap: wrap; }
+.shop-info b { color: var(--gold-light); font-weight: 600; }
+
+/* категории */
+.cats {
+  position: sticky; top: 66px; z-index: 30;
+  display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none;
+  padding: 10px 14px; background: linear-gradient(180deg, rgba(12,12,12,.96), rgba(12,12,12,.88));
+  backdrop-filter: blur(10px);
+}
+.cats::-webkit-scrollbar { display: none; }
+.chip {
+  flex: 0 0 auto; padding: 8px 14px; border-radius: 999px;
+  border: 1px solid var(--border); background: var(--card);
+  font-size: 13.5px; font-weight: 600; color: var(--text); white-space: nowrap;
+  transition: all .18s;
+}
+.chip.active { background: linear-gradient(145deg, var(--gold-light), var(--gold)); color: #171203; border-color: transparent; }
+
+/* список блюд */
+.list { padding: 4px 14px 18px; }
+.section-title { display: flex; align-items: baseline; gap: 8px; margin: 18px 0 10px; }
+.section-title h2 { font-size: 17px; font-weight: 800; letter-spacing: .3px; }
+.section-title span { font-size: 12.5px; color: var(--muted); }
+
+.item {
+  display: flex; gap: 12px; padding: 10px; margin-bottom: 10px;
+  background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+  transition: border-color .18s, transform .06s;
+}
+.item:active { transform: scale(.995); }
+.item-img {
+  width: 84px; height: 84px; border-radius: var(--radius-sm); flex: 0 0 auto;
+  object-fit: cover; background: #222;
+}
+.item-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.item-name { font-size: 14.5px; font-weight: 700; }
+.item-desc {
+  font-size: 12.5px; color: var(--muted); margin-top: 2px;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.item-bottom { margin-top: auto; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.item-price { font-size: 15px; font-weight: 800; color: var(--gold-light); white-space: nowrap; }
+.btn-add {
+  min-width: 38px; height: 38px; padding: 0 12px; border-radius: 12px;
+  background: linear-gradient(145deg, var(--gold-light), var(--gold));
+  color: #171203; font-weight: 800; font-size: 17px; line-height: 1;
+  display: grid; place-items: center; transition: transform .08s;
+}
+.btn-add:active { transform: scale(.92); }
+.btn-add.in-cart { background: var(--card-hover); color: var(--gold-light); border: 1px solid var(--gold-dark); }
+
+/* подвал */
+.foot { padding: 8px 16px calc(30px + var(--safe-b)); text-align: center; color: #6f6f6f; font-size: 12px; }
+.foot hr { border: 0; border-top: 1px solid var(--border); margin-bottom: 14px; }
+
+/* плавающая корзина */
+.cartbar {
+  position: fixed; left: 50%; transform: translateX(-50%);
+  bottom: calc(14px + var(--safe-b)); z-index: 60;
+  width: min(532px, calc(100% - 24px));
+  display: flex; align-items: center; gap: 10px;
+  padding: 13px 18px; border-radius: 16px;
+  background: linear-gradient(145deg, var(--gold-light), var(--gold));
+  color: #171203; font-weight: 800; font-size: 15px;
+  box-shadow: 0 8px 28px rgba(201,162,39,.35);
+  transition: transform .15s;
+}
+.cartbar:active { transform: translateX(-50%) scale(.985); }
+.cartbar-count {
+  display: inline-grid; place-items: center; min-width: 24px; height: 24px;
+  padding: 0 7px; border-radius: 999px; background: #171203; color: var(--gold-light);
+  font-size: 13px; font-weight: 800;
+}
+.cartbar-mid { flex: 1; text-align: left; }
+.cartbar-sum { white-space: nowrap; }
+
+/* bottom sheet (модалка блюда) */
+.sheet-backdrop {
+  position: fixed; inset: 0; z-index: 80; background: rgba(0,0,0,.6);
+  opacity: 0; transition: opacity .2s;
+}
+.sheet-backdrop.show { opacity: 1; }
+.sheet {
+  position: fixed; left: 50%; bottom: 0; transform: translate(-50%, 105%);
+  width: min(560px, 100%); z-index: 81;
+  background: var(--bg-soft); border-radius: 22px 22px 0 0;
+  border: 1px solid var(--border); border-bottom: 0;
+  transition: transform .26s cubic-bezier(.2,.8,.25,1);
+  max-height: 88vh; overflow: hidden;
+}
+.sheet.show { transform: translate(-50%, 0); }
+.sheet-close {
+  position: absolute; top: 10px; right: 12px; z-index: 2;
+  width: 34px; height: 34px; border-radius: 999px;
+  background: rgba(0,0,0,.55); color: #fff; font-size: 20px; line-height: 1;
+}
+.sheet-body { padding-bottom: calc(10px + var(--safe-b)); }
+.dish-hero { width: 100%; height: 220px; object-fit: cover; }
+.dish-info { padding: 14px 16px 16px; }
+.dish-name { font-size: 18px; font-weight: 800; }
+.dish-desc { font-size: 13.5px; color: var(--muted); margin-top: 6px; }
+.dish-row { display: flex; align-items: center; justify-content: space-between; margin-top: 16px; gap: 12px; }
+.dish-price { font-size: 20px; font-weight: 800; color: var(--gold-light); }
+.stepper { display: flex; align-items: center; gap: 0; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+.stepper button { width: 40px; height: 40px; font-size: 19px; font-weight: 700; background: var(--card); }
+.stepper button:active { background: var(--card-hover); }
+.stepper span { min-width: 40px; text-align: center; font-weight: 800; font-size: 15px; }
+.btn-primary {
+  width: 100%; margin-top: 16px; padding: 14px 16px; border-radius: 14px;
+  background: linear-gradient(145deg, var(--gold-light), var(--gold));
+  color: #171203; font-weight: 800; font-size: 15.5px; text-align: center;
+  transition: transform .08s;
+}
+.btn-primary:active { transform: scale(.985); }
+.btn-primary[disabled] { opacity: .45; }
+
+/* полноэкранные оверлеи */
+.screen {
+  position: fixed; inset: 0; z-index: 90; background: var(--bg);
+  display: flex; flex-direction: column;
+  transform: translateX(100%); transition: transform .24s cubic-bezier(.2,.8,.25,1);
+  visibility: hidden;
+}
+.screen.show { transform: none; visibility: visible; }
+.screen-head {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 14px 12px; border-bottom: 1px solid var(--border);
+  max-width: 560px; width: 100%; margin: 0 auto;
+}
+.screen-head h2 { font-size: 17px; font-weight: 800; flex: 1; }
+.back {
+  width: 38px; height: 38px; border-radius: 12px; background: var(--card);
+  border: 1px solid var(--border); font-size: 18px;
+}
+.link-danger { color: var(--danger); font-size: 13px; font-weight: 600; }
+.screen-body { flex: 1; overflow-y: auto; padding: 14px; max-width: 560px; width: 100%; margin: 0 auto; }
+.screen-foot { padding: 12px 14px calc(14px + var(--safe-b)); border-top: 1px solid var(--border); max-width: 560px; width: 100%; margin: 0 auto; }
+
+/* корзина */
+.cart-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.cart-row img { width: 54px; height: 54px; border-radius: 10px; object-fit: cover; }
+.cart-row-main { flex: 1; min-width: 0; }
+.cart-row-name { font-size: 14px; font-weight: 700; }
+.cart-row-price { font-size: 13px; color: var(--gold-light); font-weight: 700; margin-top: 2px; }
+.cart-row .stepper button { width: 34px; height: 34px; font-size: 16px; }
+.cart-row .stepper span { min-width: 30px; font-size: 14px; }
+.cart-empty { text-align: center; color: var(--muted); padding: 48px 20px; font-size: 14px; }
+.cart-empty .big { font-size: 44px; margin-bottom: 10px; }
+.total-line { display: flex; justify-content: space-between; font-size: 15px; padding: 4px 0; color: var(--muted); }
+.total-line.grand { font-size: 17px; font-weight: 800; color: var(--text); padding-top: 8px; }
+.total-line.grand span:last-child { color: var(--gold-light); }
+
+/* оформление */
+.field { margin-bottom: 14px; }
+.field label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+.field input, .field textarea {
+  width: 100%; padding: 12px 14px; border-radius: 12px;
+  background: var(--card); border: 1px solid var(--border); color: var(--text);
+  outline: none; font-size: 15px;
+}
+.field input:focus, .field textarea:focus { border-color: var(--gold-dark); }
+.field input.err { border-color: var(--danger); }
+.field .hint { font-size: 11.5px; color: #6f6f6f; margin-top: 4px; }
+.seg { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+.seg button {
+  padding: 12px 8px; border-radius: 12px; border: 1px solid var(--border);
+  background: var(--card); font-size: 14px; font-weight: 700; color: var(--muted);
+}
+.seg button.active { border-color: var(--gold); color: var(--gold-light); background: #1c1708; }
+.pickup-note {
+  font-size: 12.5px; color: var(--muted); background: var(--card);
+  border: 1px dashed var(--border); border-radius: 12px; padding: 10px 12px; margin-bottom: 14px;
+}
+.check { display: flex; gap: 10px; align-items: flex-start; font-size: 12.5px; color: var(--muted); margin: 4px 0 14px; }
+.check input { width: 18px; height: 18px; margin-top: 1px; accent-color: var(--gold); }
+.check a { color: var(--gold-light); }
+
+/* успех */
+.screen-done { justify-content: center; align-items: center; }
+.done-wrap { max-width: 480px; width: 100%; padding: 28px 22px calc(28px + var(--safe-b)); text-align: center; }
+.done-emoji { font-size: 56px; margin-bottom: 8px; }
+.done-title { font-size: 21px; font-weight: 800; }
+.done-num { color: var(--gold-light); }
+.done-sub { color: var(--muted); font-size: 14px; margin-top: 8px; }
+.done-card {
+  text-align: left; margin-top: 20px; padding: 14px 16px;
+  background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+  font-size: 13.5px;
+}
+.done-card .total-line { padding: 3px 0; }
+.done-tip { margin-top: 14px; font-size: 12.5px; color: #6f6f6f; }
+
+/* toast */
+.toast {
+  position: fixed; left: 50%; bottom: calc(86px + var(--safe-b)); transform: translateX(-50%) translateY(8px);
+  z-index: 100; background: #262626; color: var(--text);
+  padding: 10px 16px; border-radius: 12px; font-size: 13.5px; font-weight: 600;
+  opacity: 0; transition: opacity .2s, transform .2s; pointer-events: none;
+  max-width: calc(100% - 40px); text-align: center;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Бай-Тандыр — заказ еды</title>
+<meta name="theme-color" content="#0c0c0c">
+<meta name="color-scheme" content="dark">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🫓</text></svg>">
+<style>/* шрифты подтягиваются с fallback — мини-апп выглядит одинаково и без сети к Google */
+@font-face{font-family:'PlayfairFallback';src:local('Georgia'),local('Times New Roman');}
+</style>
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<div id="app">
+  <!-- Плашка демо (видна только вне ВК) -->
+  <div id="demoNote" class="demo-note" hidden>Демо-режим — приложение открыто вне ВКонтакте</div>
+
+  <!-- Шапка -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-logo">БТ</div>
+      <div class="brand-text">
+        <div class="brand-name">БАЙ-ТАНДЫР</div>
+        <div class="brand-sub">Тандыр · Мангал · Казан</div>
+      </div>
+    </div>
+    <div class="shop-info" id="shopInfo"></div>
+  </header>
+
+  <!-- Категории -->
+  <nav class="cats" id="cats" aria-label="Категории меню"></nav>
+
+  <!-- Список блюд -->
+  <main class="list" id="list" aria-live="polite"></main>
+
+  <!-- Подвал -->
+  <footer class="foot" id="foot"></footer>
+
+  <!-- Плавающая корзина -->
+  <button class="cartbar" id="cartbar" hidden type="button">
+    <span class="cartbar-left"><span class="cartbar-count" id="cartbarCount">0</span></span>
+    <span class="cartbar-mid">Корзина</span>
+    <span class="cartbar-sum" id="cartbarSum">0 ₽</span>
+  </button>
+</div>
+
+<!-- Модалка блюда -->
+<div class="sheet-backdrop" id="dishBackdrop" hidden></div>
+<section class="sheet" id="dishSheet" hidden aria-modal="true" role="dialog">
+  <button class="sheet-close" id="dishClose" type="button" aria-label="Закрыть">×</button>
+  <div class="sheet-body" id="dishBody"></div>
+</section>
+
+<!-- Экран корзины -->
+<section class="screen" id="cartScreen" hidden aria-modal="true" role="dialog">
+  <div class="screen-head">
+    <button class="back" id="cartBack" type="button" aria-label="Назад">←</button>
+    <h2>Корзина</h2>
+    <button class="link-danger" id="cartClear" type="button">Очистить</button>
+  </div>
+  <div class="screen-body" id="cartBody"></div>
+  <div class="screen-foot" id="cartFoot"></div>
+</section>
+
+<!-- Экран оформления -->
+<section class="screen" id="checkoutScreen" hidden aria-modal="true" role="dialog">
+  <div class="screen-head">
+    <button class="back" id="checkoutBack" type="button" aria-label="Назад">←</button>
+    <h2>Оформление заказа</h2>
+    <span></span>
+  </div>
+  <div class="screen-body" id="checkoutBody"></div>
+  <div class="screen-foot" id="checkoutFoot"></div>
+</section>
+
+<!-- Экран успеха -->
+<section class="screen screen-done" id="doneScreen" hidden aria-modal="true" role="dialog">
+  <div class="done-wrap" id="doneBody"></div>
+</section>
+
+<div class="toast" id="toast" hidden></div>
+
+<script src="vendor/vk-bridge.min.js"></script>
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Бай-Тандыр — песочница VK-бота (демо)</title>
+<style>
+  :root{
+    --vk-blue:#5181b8; --vk-green:#4bb34b; --vk-red:#e64646;
+    --vk-bg:#edeef0; --vk-line:#e7e8ec; --vk-link:#4986cc;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{background:#f5f6f8; font-family:-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif; color:#1c1c1e; padding:22px 14px 40px;}
+  .pg-head{max-width:820px; margin:0 auto 14px; display:flex; align-items:flex-start; gap:14px; justify-content:space-between; flex-wrap:wrap;}
+  .pg-head h1{font-size:19px; font-weight:700;}
+  .pg-head p{margin-top:6px; font-size:13px; color:#6d7885; line-height:1.45; max-width:620px;}
+  .reset{border:1px solid #d9dde2; background:#fff; border-radius:10px; padding:9px 14px; font-size:13px; font-weight:600; color:#3a4650; cursor:pointer;}
+  .reset:hover{background:#f0f2f5;}
+
+  .tabs{display:none; max-width:820px; margin:0 auto 12px; gap:8px;}
+  .tab{flex:1; border:1px solid #d9dde2; background:#fff; border-radius:10px; padding:10px 12px; font-size:14px; font-weight:600; color:#3a4650; cursor:pointer; position:relative;}
+  .tab.on{background:var(--vk-blue); border-color:var(--vk-blue); color:#fff;}
+  .badge{display:inline-block; min-width:18px; height:18px; line-height:18px; border-radius:9px; background:var(--vk-red); color:#fff; font-size:11px; text-align:center; padding:0 5px; margin-left:4px; vertical-align:1px;}
+
+  .wrap{max-width:820px; margin:0 auto; display:flex; gap:22px; justify-content:center; align-items:flex-start; flex-wrap:wrap;}
+
+  .frame{width:375px; height:660px; background:#fff; border-radius:24px; overflow:hidden;
+         box-shadow:0 10px 30px rgba(0,20,50,.14), 0 0 0 1px rgba(0,20,50,.06);
+         display:flex; flex-direction:column;}
+  .vk-top{height:54px; flex:0 0 54px; display:flex; align-items:center; gap:9px; padding:0 12px; background:#fff; border-bottom:1px solid var(--vk-line);}
+  .ava{width:34px; height:34px; border-radius:50%; background:linear-gradient(145deg,#e8b64a,#a9760f); color:#221604; font-weight:800; font-size:13px; display:flex; align-items:center; justify-content:center; letter-spacing:.5px;}
+  .who{flex:1; min-width:0;}
+  .who .nm{font-size:14.5px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .who .st{font-size:11px; color:#95a1ad; margin-top:1px;}
+  .role-chip{font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:.6px; color:#8a94a0; border:1px solid #e1e3e6; border-radius:999px; padding:3px 9px;}
+
+  .chat{flex:1; background:var(--vk-bg); padding:10px 10px 8px; display:flex; flex-direction:column; gap:6px; overflow-y:auto;}
+  .msg{max-width:88%; padding:7px 11px; border-radius:14px; background:#fff; box-shadow:0 1px 1px rgba(0,20,50,.07);
+       font-size:13.3px; line-height:1.42; align-self:flex-start; border-bottom-left-radius:5px; overflow-wrap:break-word;}
+  .msg.me{align-self:flex-end; background:#cfe3ff; border-bottom-left-radius:14px; border-bottom-right-radius:5px;}
+  .msg img.photo{display:block; width:100%; border-radius:10px; margin-bottom:6px;}
+  .note{align-self:center; color:#8a94a0; font-size:12px; text-align:center; padding:5px 12px; line-height:1.4;}
+
+  .msg .inl{display:flex; margin:7px -11px -7px; border-top:1px solid #eceef1;}
+  .inl .seg{flex:1; border:none; background:transparent; text-align:center; font-size:12px; padding:9px 2px; color:var(--vk-link); font-weight:600; cursor:pointer; font-family:inherit;}
+  .inl .seg + .seg{border-left:1px solid #eceef1;}
+  .inl .seg:hover{background:#f7f9fb;}
+  .inl .seg.g{color:var(--vk-green);} .inl .seg.r{color:var(--vk-red);}
+
+  .typing{display:flex; gap:4px; padding:11px 12px; width:54px;}
+  .typing span{width:7px; height:7px; border-radius:50%; background:#bfc7cf; animation:tp 1.2s infinite;}
+  .typing span:nth-child(2){animation-delay:.15s;} .typing span:nth-child(3){animation-delay:.3s;}
+  @keyframes tp{0%,60%,100%{opacity:.35; transform:translateY(0);} 30%{opacity:1; transform:translateY(-2px);}}
+
+  .kb{flex:0 0 auto; background:#fff; border-top:1px solid var(--vk-line); padding:8px 10px;}
+  .kb:empty{display:none;}
+  .kb .row{display:flex; gap:6px; margin-bottom:6px;}
+  .kb .row:last-child{margin-bottom:0;}
+  .b{flex:1; border:1px solid #e1e3e6; background:#fff; border-radius:8px; padding:9px 6px;
+     font-size:12.6px; font-weight:600; color:#2c2d2e; text-align:center; white-space:nowrap; overflow:hidden;
+     text-overflow:ellipsis; cursor:pointer; font-family:inherit;}
+  .b:hover{background:#f7f9fb;}
+  .b.p{background:var(--vk-blue); border-color:var(--vk-blue); color:#fff;}
+  .b.p:hover{filter:brightness(1.06);}
+  .b.g{background:var(--vk-green); border-color:var(--vk-green); color:#fff;}
+  .b.g:hover{filter:brightness(1.06);}
+  .b.r{background:var(--vk-red); border-color:var(--vk-red); color:#fff;}
+  .b.r:hover{filter:brightness(1.06);}
+
+  .input{flex:0 0 auto; background:#fff; border-top:1px solid var(--vk-line); padding:9px 14px 11px;}
+  .input input{width:100%; border:none; outline:none; font-size:13.5px; font-family:inherit; color:#1c1c1e;}
+  .input input::placeholder{color:#99a2ad;}
+
+  .hint{max-width:820px; margin:18px auto 0; font-size:12.5px; color:#8a94a0; line-height:1.5; text-align:center;}
+
+  @media (max-width:880px){
+    .tabs{display:flex;}
+    .frame{width:100%; max-width:420px;}
+    body[data-tab="client"] #ownerFrame{display:none;}
+    body[data-tab="owner"] #clientFrame{display:none;}
+  }
+</style>
+</head>
+<body data-tab="client">
+
+<header class="pg-head">
+  <div>
+    <h1>VK-бот «Бай-Тандыр» — интерактивная песочница</h1>
+    <p>Так бот работает в сообщениях сообщества. Нажимайте кнопки и пишите сообщения — бот отвечает по той же логике и теми же текстами, что реальный бот. Заказ из левого окна прилетает владельцу в правое.</p>
+  </div>
+  <button class="reset">↺ Сбросить демо</button>
+</header>
+
+<div class="tabs">
+  <button class="tab" data-role="client">👤 Клиент</button>
+  <button class="tab" data-role="owner">🍳 Владелец <span class="badge" hidden>0</span></button>
+</div>
+
+<main class="wrap">
+  <!-- Клиент -->
+  <section class="frame" id="clientFrame">
+    <div class="vk-top">
+      <div class="ava">БТ</div>
+      <div class="who"><div class="nm">Бай-Тандыр</div><div class="st">сообщество · онлайн</div></div>
+      <div class="role-chip">клиент</div>
+    </div>
+    <div class="chat" id="clientChat"></div>
+    <div class="kb" id="clientKb"></div>
+    <div class="input"><input id="clientInput" placeholder="Напишите сообщение…" autocomplete="off" enterkeyhint="send"></div>
+  </section>
+
+  <!-- Владелец -->
+  <section class="frame" id="ownerFrame">
+    <div class="vk-top">
+      <div class="ava">БТ</div>
+      <div class="who"><div class="nm">Бай-Тандыр · для владельца</div><div class="st">личные сообщения сообщества</div></div>
+      <div class="role-chip">владелец</div>
+    </div>
+    <div class="chat" id="ownerChat"></div>
+    <div class="kb" id="ownerKb"></div>
+    <div class="input"><input id="ownerInput" placeholder="Сообщение" autocomplete="off" enterkeyhint="send"></div>
+  </section>
+</main>
+
+<p class="hint">Подсказка: начните как клиент — «Из тандыра» → лепёшка → «Добавить в корзину» → «Корзина» → «Оформить заказ» →
+заполните имя, телефон и адрес. У владельца сразу появится заказ с кнопками «Принять / Готово» — нажмите их, и клиенту придут статусы.</p>
+
+<script src="js/data.js"></script>
+<script src="js/sandbox.js"></script>
+</body>
+</html>
