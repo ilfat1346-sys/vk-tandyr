@@ -16,7 +16,9 @@
     orderCounter: 1024,
     inVK: false,
     userName: "",
+    userId: null,
     lastOrder: null,
+    statusTimer: null,
   };
 
   var LS_CART = "td_cart_v1", LS_CNT = "td_cnt_v1", LS_FORM = "td_form_v1";
@@ -329,6 +331,8 @@
       phone: state.form.phone.trim(),
       address: state.form.delivery ? state.form.address.trim() : "",
       comment: state.form.comment.trim(),
+      source: (function () { var m = /[?&]src=([a-z]+)/i.exec(location.search); return (m && /^(site|miniapp|vkb)$/.test(m[1])) ? m[1] : "miniapp"; })(),
+      vk_id: state.userId || null,
       createdAt: new Date().toISOString(),
     };
   }
@@ -402,19 +406,48 @@
         '<div class="total-line grand"><span>Итого</span><span>' + rub(o.total) + "</span></div>" +
         '<div class="total-line"><span>' + bymode + "</span></div>" +
       "</div>" +
+      (window.TANDRY_API_URL && !o.demo ? '<div class="done-status" id="orderStatus">Статус: <b>новый</b></div>' : "") +
       (o.demo ? '<div class="done-tip">Демонстрационный режим: заказ не отправлен, показан пример работы приложения.</div>' : "") +
       (window.VK_GROUP_ID && state.inVK ? '<button class="btn-primary" id="allowMsg" type="button">🔔 Сообщать о статусе заказа в ВК</button>' : "") +
       '<button class="btn-primary" id="doneBack" type="button">Вернуться в меню</button>';
     var s = $("doneScreen");
     s.hidden = false;
     requestAnimationFrame(function () { s.classList.add("show"); });
-    $("doneBack").onclick = function () { closeScreen("doneScreen"); };
+    $("doneBack").onclick = function () { stopStatusPoll(); closeScreen("doneScreen"); };
+    startStatusPoll(o);
     var am = $("allowMsg");
     if (am) am.onclick = function () {
       window.vkBridge.send("VKWebAppAllowMessagesFromGroup", { group_id: window.VK_GROUP_ID })
         .then(function () { toast("Готово! Сообщим о готовности заказа"); am.remove(); })
         .catch(function () { toast("Не получилось. Можно повторить в настройках."); });
     };
+  }
+
+  /* ---------- статус заказа (реальный режим, сервер заказов) ---------- */
+  function startStatusPoll(o) {
+    stopStatusPoll();
+    var url = window.TANDRY_API_URL;
+    if (!url || o.demo) return;
+    var el = document.getElementById("orderStatus");
+    var tries = 0;
+    state.statusTimer = setInterval(function () {
+      tries += 1;
+      if (tries > 120) { stopStatusPoll(); return; }
+      var scr = $("doneScreen");
+      if (!scr || scr.hidden) return;
+      fetch(url + "/" + o.number)
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (d) {
+          if (d && d.order && el) {
+            var mark = d.order.status === "ready" ? " \u2705" : (d.order.status === "cancelled" ? " \u274c" : "");
+            el.innerHTML = "Статус: <b>" + esc(d.order.status_ru) + "</b>" + mark;
+          }
+        })
+        .catch(function () {});
+    }, 7000);
+  }
+  function stopStatusPoll() {
+    if (state.statusTimer) { clearInterval(state.statusTimer); state.statusTimer = null; }
   }
 
   /* ---------- VK Bridge ---------- */
@@ -431,6 +464,7 @@
         })
         .then(function (u) {
           if (u && u.first_name) { state.userName = u.first_name; }
+          if (u && u.id) { state.userId = u.id; }
         })
         .catch(function () {});
     } catch (e) { $("demoNote").hidden = false; }
